@@ -11,7 +11,7 @@ namespace BulkReplace.Console
 {
     [TabCompletion]
     [ArgExceptionBehavior(ArgExceptionPolicy.StandardExceptionHandling)]
-    [ArgDescription("Bulks replace a set of strings")]
+    [ArgDescription("Bulk replace a set of strings")]
     [ArgExample("bulkreplace ", "replace a set of strings in a file")]
     public class Controller
     {

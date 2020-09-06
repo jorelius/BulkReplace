@@ -1,0 +1,38 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.0.100
+      - name: Build with dotnet
+        run: dotnet build ./src --configuration Release
+      - name: Test with dotnet
+        run: dotnet test ./src
+
+  publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Pack Nuget Package
+        run: dotnet pack ./src/BulkReplace.sln --configuration Release
+      - name: Push package to Nuget
+        run: |
+          dotnet nuget push ./src/BulkReplace.Console/**/*.nupkg --api-key ${{ secrets.NUGET_DEPLOY_KEY }} --source https://api.nuget.org/v3/index.json --no-symbols true --skip-duplicate
+
+
